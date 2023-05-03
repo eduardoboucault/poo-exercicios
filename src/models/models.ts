@@ -1,32 +1,35 @@
+export interface IVideos {
+  id: string,
+  title: string,
+  duration: number,
+  created_at: string
+}
 export class Video {
   constructor(
-    private id: string,
-    private title: string,
-    private duration: number,
-    private createAt: string
+    private videos: IVideos,
   ) {}
 
   public getId(): string {
-    return this.id;
+    return this.videos.id;
   }
 
   public getTitle(): string {
-    return this.title;
+    return this.videos.title;
   }
 
   public getDuration(): number {
-    return this.duration;
+    return this.videos.duration;
   }
 
   public getCreatAt(): string {
-    return this.createAt;
+    return this.videos.created_at;
   }
 
-  public setTitle(newTitle: string): string {
-    return this.title = newTitle;
+  public setTitle(newTitle: string): void {
+    this.videos.title = newTitle;
   }
 
   public setDuration(newDuration: number): void {
-    this.duration = newDuration;
+    this.videos.duration = newDuration;
   }
 }

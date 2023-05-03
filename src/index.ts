@@ -3,6 +3,7 @@ import cors from "cors";
 import { VideosDatabase } from "./database/VideosDatabase";
 import { TVideosDb } from "./types/types";
 import { Video } from "./models/models";
+import { IVideos } from "./models/models";
 
 const app = express();
 
@@ -31,10 +32,7 @@ app.get("/videos", async (req: Request, res: Response) => {
 
     const result = await VIDEOS_DB.findVideos(q);
 
-    const videos: Video[] = result.map(
-      (video) =>
-        new Video(video.id, video.title, video.duration, video.created_at)
-    );
+    const videos: Video[] = result.map((video) => new Video(video));
     res.status(200).send(videos);
   } catch (error) {
     console.log(error);
@@ -52,7 +50,7 @@ app.get("/videos", async (req: Request, res: Response) => {
 app.post("/videos", async (req: Request, res: Response) => {
   try {
     const { id, title, duration } = req.body;
-
+    console.log(id)
     if (
       !id ||
       !title ||
@@ -70,17 +68,23 @@ app.post("/videos", async (req: Request, res: Response) => {
       res.status(400);
       throw new Error("Esta ID já está cadastrada.");
     }
-
-    const newVideo = new Video(id, title, duration, new Date().toISOString());
-
-    const newVideoDB: TVideosDb = {
+    
+    const newVideo = new Video({
+      id ,
+      title,
+      duration,
+      created_at: new Date().toLocaleTimeString()
+    });
+    
+    console.log(newVideo.getId());
+    const newVideoDB: IVideos = {
       id: newVideo.getId(),
       title: newVideo.getTitle(),
       duration: newVideo.getDuration(),
-      created_at: newVideo.getCreatAt(),
+      created_at: new Date().toLocaleTimeString(),
     };
 
-    const result = await VIDEOS_DB.insertVideo(newVideoDB);
+    await VIDEOS_DB.insertVideo(newVideoDB);
 
     res.status(201).send("VIDEO XUXADO COM SUCESSO!");
   } catch (error) {
@@ -126,16 +130,11 @@ app.put("/videos/:id", async (req: Request, res: Response) => {
 
     //* Instanciar novo objeto com valores baseados no que foi encontrado em videoDBExist;
 
-    const video = new Video(
-      videoDBExist.id,
-      videoDBExist.title,
-      videoDBExist.duration,
-      videoDBExist.created_at
-    );
+    const video = new Video(videoDBExist);
 
-    const newTitle = video.setTitle(title);
+    video.setTitle(title);
 
-    await VIDEOS_DB.updateTitleVideo(newTitle, id);
+    await VIDEOS_DB.updateTitleVideo(video.getTitle(), id);
 
     res.status(201).send("Vídeo alterado com sucesso!");
   } catch (error) {
