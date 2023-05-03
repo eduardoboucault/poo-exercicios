@@ -22,8 +22,8 @@ export class Video {
     return this.createAt;
   }
 
-  public setTitle(newTitle: string): void {
-    this.title = newTitle;
+  public setTitle(newTitle: string): string {
+    return this.title = newTitle;
   }
 
   public setDuration(newDuration: number): void {
