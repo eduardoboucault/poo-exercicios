@@ -1,3 +1,4 @@
+import { IVideos } from "../models/models";
 import { TVideosDb } from "../types/types";
 import { BaseDatabase } from "./BaseDatabase";
 
@@ -38,14 +39,16 @@ export class VideosDatabase extends BaseDatabase {
   }
 
   public async findVideosById(
-    id: string | undefined
-  ): Promise<TVideosDb | undefined> {
-    const [videoDBExist]: TVideosDb[] | undefined[] =
+    id: string
+  ): Promise<IVideos> {
+    console.log(id)
+    const [videoDBExist]:IVideos[] =
       await VideosDatabase.conection(VideosDatabase.TABLE_VIDEOS).where({ id });
+      console.log(videoDBExist)
     return videoDBExist;
   }
 
-  public async insertVideo(newVideoDB: TVideosDb): Promise<void> {
+  public async insertVideo(newVideoDB: IVideos): Promise<void> {
     await VideosDatabase.conection(VideosDatabase.TABLE_VIDEOS).insert(
       newVideoDB
     );
